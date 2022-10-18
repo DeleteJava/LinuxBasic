@@ -1,0 +1,310 @@
+
+	/dev/sdc [20G] 디스크를 각각의 파티션으로 분할하고 지정된 디렉토리에 마운트하세요
+
+	장치 파일			파일 시스템	마운트 포인트
+pri	/dev/sdc1 [1G]		ext4		/export/test1
+pri	/dev/sdc2 [2G]		ext4		/export/test2
+pri	/dev/sdc3 [3G]		ext4		/export/test3
+ext	/dev/sdc4 [All]		
+log	/dev/sdc5 [4G]		ext4		/export/test5
+log	/dev/sdc6 [4G]		ext4		/export/test6
+log	/dev/sdc7 [All]		ext4		/export/test7
+
+	[root@itbank ~]# mkfs.ext4 /dev/sdc1       파티션 포멧형식 1
+	[root@itbank ~]# mkfs -t ext4 /dev/sdc2   파티션 포멧형식 2
+
+	[root@itbank ~]# df -Th 	
+
+	마운트 확인 한 후 /etc/fstab 에 UUID 를 이용하여 자동 마운트를 등록하고
+	init 6 해서 재부팅한 다음, 다시 df -Th 확인하세요
+
+---------------------------------------------------------------------------------
+
+
+
+login as: root
+root@192.168.1.100's password:
+Last login: Tue Mar 29 13:44:41 2022 from 192.168.1.1
+
+[root@itbank ~]# find /sys -name scan
+/sys/devices/pci0000:00/0000:00:07.1/host0/scsi_host/host0/scan
+/sys/devices/pci0000:00/0000:00:07.1/host1/scsi_host/host1/scan
+/sys/devices/pci0000:00/0000:00:10.0/host2/scsi_host/host2/scan
+/sys/module/scsi_mod/parameters/scan
+
+[root@itbank ~]# echo "- - -" > /sys/devices/pci0000:00/0000:00:10.0/host2/scsi_host/host2/scan
+
+[root@itbank ~]# fdisk -l | grep ^Disk
+Disk /dev/sda: 42.9 GB, 42949672960 bytes
+Disk identifier: 0x0001f85c
+Disk /dev/mapper/vg_itbank-lv_root: 40.3 GB, 40340815872 bytes
+Disk identifier: 0x00000000
+Disk /dev/mapper/vg_itbank-lv_swap: 2080 MB, 2080374784 bytes
+Disk identifier: 0x00000000
+Disk /dev/sdb: 1073 MB, 1073741824 bytes
+Disk identifier: 0x00000000
+Disk /dev/sdc: 21.5 GB, 21474836480 bytes
+Disk identifier: 0x00000000
+
+[root@itbank ~]# ls -l /dev/sdc
+brw-rw----. 1 root disk 8, 32 2022-03-29 15:03 /dev/sdc
+
+[root@itbank ~]# ls -l /dev/sdc*
+brw-rw----. 1 root disk 8, 32 2022-03-29 15:03 /dev/sdc
+
+[root@itbank ~]# fdisk /dev/sdc
+Device contains neither a valid DOS partition table, nor Sun, SGI or OSF disklabel
+Building a new DOS disklabel with disk identifier 0xe858e207.
+Changes will remain in memory only, until you decide to write them.
+After that, of course, the previous content won't be recoverable.
+
+Warning: invalid flag 0x0000 of partition table 4 will be corrected by w(rite)
+
+WARNING: DOS-compatible mode is deprecated. It's strongly recommended to
+         switch off the mode (command 'c') and change display units to
+         sectors (command 'u').
+
+Command (m for help): n
+Command action
+   e   extended
+   p   primary partition (1-4)
+p
+Partition number (1-4): 1
+First cylinder (1-2610, default 1):
+Using default value 1
+Last cylinder, +cylinders or +size{K,M,G} (1-2610, default 2610): +1G
+
+Command (m for help): n
+Command action
+   e   extended
+   p   primary partition (1-4)
+p
+Partition number (1-4): 2
+First cylinder (133-2610, default 133):
+Using default value 133
+Last cylinder, +cylinders or +size{K,M,G} (133-2610, default 2610): +2G
+
+Command (m for help): n
+Command action
+   e   extended
+   p   primary partition (1-4)
+p
+Partition number (1-4): 3
+First cylinder (395-2610, default 395):
+Using default value 395
+Last cylinder, +cylinders or +size{K,M,G} (395-2610, default 2610): +3G
+
+Command (m for help):
+Command (m for help): n
+Command action
+   e   extended
+   p   primary partition (1-4)
+e
+Selected partition 4
+First cylinder (788-2610, default 788):
+Using default value 788
+Last cylinder, +cylinders or +size{K,M,G} (788-2610, default 2610):
+Using default value 2610
+
+Command (m for help): p
+
+Disk /dev/sdc: 21.5 GB, 21474836480 bytes
+255 heads, 63 sectors/track, 2610 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0xe858e207
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdc1               1         132     1060258+  83  Linux
+/dev/sdc2             133         394     2104515   83  Linux
+/dev/sdc3             395         787     3156772+  83  Linux
+/dev/sdc4             788        2610    14643247+   5  Extended
+
+Command (m for help): n
+First cylinder (788-2610, default 788):
+Using default value 788
+Last cylinder, +cylinders or +size{K,M,G} (788-2610, default 2610): +4G
+
+Command (m for help): n
+First cylinder (1311-2610, default 1311):
+Using default value 1311
+Last cylinder, +cylinders or +size{K,M,G} (1311-2610, default 2610): +4G
+
+Command (m for help): n
+First cylinder (1834-2610, default 1834):
+Using default value 1834
+Last cylinder, +cylinders or +size{K,M,G} (1834-2610, default 2610):
+Using default value 2610
+
+Command (m for help): p
+
+Disk /dev/sdc: 21.5 GB, 21474836480 bytes
+255 heads, 63 sectors/track, 2610 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0xe858e207
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdc1               1         132     1060258+  83  Linux
+/dev/sdc2             133         394     2104515   83  Linux
+/dev/sdc3             395         787     3156772+  83  Linux
+/dev/sdc4             788        2610    14643247+   5  Extended
+/dev/sdc5             788        1310     4200966   83  Linux
+/dev/sdc6            1311        1833     4200966   83  Linux
+/dev/sdc7            1834        2610     6241221   83  Linux
+
+Command (m for help): w
+The partition table has been altered!
+
+Calling ioctl() to re-read partition table.
+Syncing disks.
+
+[root@itbank ~]# ls -l /dev/sdc*
+brw-rw----. 1 root disk 8, 32 2022-03-29 15:06 /dev/sdc
+brw-rw----. 1 root disk 8, 33 2022-03-29 15:06 /dev/sdc1
+brw-rw----. 1 root disk 8, 34 2022-03-29 15:06 /dev/sdc2
+brw-rw----. 1 root disk 8, 35 2022-03-29 15:06 /dev/sdc3
+brw-rw----. 1 root disk 8, 36 2022-03-29 15:06 /dev/sdc4
+brw-rw----. 1 root disk 8, 37 2022-03-29 15:06 /dev/sdc5
+brw-rw----. 1 root disk 8, 38 2022-03-29 15:06 /dev/sdc6
+brw-rw----. 1 root disk 8, 39 2022-03-29 15:06 /dev/sdc7
+
+[root@itbank ~]# mkfs.ext4 /dev/sdc1 | grep done
+mke2fs 1.41.12 (17-May-2010)
+Writing inode tables: done
+Creating journal (8192 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+[root@itbank ~]# mkfs.ext4 /dev/sdc2 | grep done
+mke2fs 1.41.12 (17-May-2010)
+Writing inode tables: done
+Creating journal (16384 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+[root@itbank ~]# mkfs.ext4 /dev/sdc3 | grep done
+mke2fs 1.41.12 (17-May-2010)
+Writing inode tables: done
+Creating journal (16384 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+[root@itbank ~]# mkfs.ext4 /dev/sdc4 | grep done
+mke2fs 1.41.12 (17-May-2010)
+mkfs.ext4: inode_size (128) * inodes_count (0) too big for a
+        filesystem with 0 blocks, specify higher inode_ratio (-i)
+        or lower inode count (-N).
+
+[root@itbank ~]# mkfs.ext4 /dev/sdc5 | grep done
+mke2fs 1.41.12 (17-May-2010)
+Writing inode tables: done
+Creating journal (32768 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+[root@itbank ~]# mkfs.ext4 /dev/sdc6 | grep done
+mke2fs 1.41.12 (17-May-2010)
+Writing inode tables: done
+Creating journal (32768 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+[root@itbank ~]# mkfs.ext4 /dev/sdc7 | grep done
+mke2fs 1.41.12 (17-May-2010)
+Writing inode tables: done
+Creating journal (32768 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+[root@itbank ~]# mkdir -p /export/test1
+[root@itbank ~]# mkdir -p /export/test2
+[root@itbank ~]# mkdir -p /export/test3
+[root@itbank ~]# mkdir -p /export/test5
+[root@itbank ~]# mkdir -p /export/test6
+[root@itbank ~]# mkdir -p /export/test7
+
+[root@itbank ~]# mount /dev/sdc1 /export/test1
+[root@itbank ~]# mount /dev/sdc2 /export/test2
+[root@itbank ~]# mount /dev/sdc3 /export/test3
+[root@itbank ~]# mount /dev/sdc5 /export/test5
+[root@itbank ~]# mount /dev/sdc6 /export/test6
+[root@itbank ~]# mount /dev/sdc7 /export/test7
+
+[root@itbank ~]# df -Th | grep sdc
+/dev/sdc1            ext4   988M  1.3M  935M   1% /export/test1
+/dev/sdc2            ext4   2.0G  3.1M  1.9G   1% /export/test2
+/dev/sdc3            ext4   3.0G  4.6M  2.8G   1% /export/test3
+/dev/sdc5            ext4   3.9G  8.1M  3.7G   1% /export/test5
+/dev/sdc6            ext4   3.9G  8.1M  3.7G   1% /export/test6
+/dev/sdc7            ext4   5.8G   12M  5.5G   1% /export/test7
+[root@itbank ~]#
+[root@itbank ~]# blkid | grep sdc
+/dev/sdc1: UUID="58b0e788-1935-4dab-aadb-cf00dcea9f93" TYPE="ext4"
+/dev/sdc2: UUID="94277e3b-d1f1-44a6-bff5-dcccbd092c5e" TYPE="ext4"
+/dev/sdc3: UUID="4d49adf5-ecd5-4f14-b730-b198214bfd65" TYPE="ext4"
+/dev/sdc5: UUID="c2af2b41-d73d-4443-8c42-1310ed8f4bf4" TYPE="ext4"
+/dev/sdc6: UUID="a72331a5-eec3-4efd-b36d-1ade9821eb7b" TYPE="ext4"
+/dev/sdc7: UUID="6ea98b8e-db17-4564-8703-9226360e35c8" TYPE="ext4"
+
+[root@itbank ~]# vi /etc/fstab
+
+#########################################################################
+#	G o ESC								#
+#	:$r! blkid | grep sdc						#
+#	Ctrl + v (visual block, 방향키 조합으로 원하는 부분만큼 선택후 x)	#
+#	:19,24s/"//g							#
+#	y$ jp jp jp							#
+#########################################################################
+
+나는 이렇게 했다
+UUID=b412effe-dfd5-4271-821c-9640ee069373       /export/test1   ext4    defaults        0 0
+UUID=2cade787-cb32-4ba8-9ea4-e620f481e1f7       /export/test2   ext4    defaults        0 0
+UUID=4b59301c-f8a1-4fbf-8ba1-62a08e4ea1aa       /export/test3   ext4    defaults        0 0
+UUID=412d1191-a792-4e5b-9c25-9bc74950dac7       /export/test5   ext4    defaults        0 0
+UUID=d5d1a60f-9e13-472c-8e1d-a867b7385e1d       /export/test6   ext4    defaults        0 0
+UUID=9f7b3bac-eff5-4896-a7df-594b5718d572       /export/test7   ext4    defaults        0 0
+
+
+
+
+
+
+
+[root@itbank ~]# umount -a 2>/dev/null
+[root@itbank ~]# mount -a
+
+[root@itbank ~]# df -Th
+Filesystem           Type   Size  Used Avail Use% Mounted on
+/dev/mapper/vg_itbank-lv_root
+                     ext4    37G  3.9G   32G  12% /
+tmpfs                tmpfs  491M  224K  491M   1% /dev/shm
+/dev/sda1            ext4   477M   35M  418M   8% /boot
+/dev/sdb             ext4   976M  1.3M  924M   1% /test/sdb
+/dev/sdc1            ext4   988M  1.3M  935M   1% /export/test1
+/dev/sdc2            ext4   2.0G  3.1M  1.9G   1% /export/test2
+/dev/sdc3            ext4   3.0G  4.6M  2.8G   1% /export/test3
+/dev/sdc5            ext4   3.9G  8.1M  3.7G   1% /export/test5
+/dev/sdc6            ext4   3.9G  8.1M  3.7G   1% /export/test6
+/dev/sdc7            ext4   5.8G   12M  5.5G   1% /export/test7
+
+[root@itbank ~]# init 6
+
+login as: root
+root@192.168.1.100's password:
+Last login: Tue Mar 29 15:03:04 2022 from 192.168.1.1
+
+[root@itbank ~]# df -h
+Filesystem            Size  Used Avail Use% Mounted on
+/dev/mapper/vg_itbank-lv_root
+                       37G  3.9G   32G  11% /
+tmpfs                 491M   72K  491M   1% /dev/shm
+/dev/sda1             477M   35M  418M   8% /boot
+/dev/sdb              976M  1.3M  924M   1% /test/sdb
+/dev/sdc1             988M  1.3M  935M   1% /export/test1
+/dev/sdc2             2.0G  3.1M  1.9G   1% /export/test2
+/dev/sdc3             3.0G  4.6M  2.8G   1% /export/test3
+/dev/sdc5             3.9G  8.1M  3.7G   1% /export/test5
+/dev/sdc6             3.9G  8.1M  3.7G   1% /export/test6
+/dev/sdc7             5.8G   12M  5.5G   1% /export/test7
+.host:/               466G  130G  336G  28% /mnt/hgfs
+
+
+
+

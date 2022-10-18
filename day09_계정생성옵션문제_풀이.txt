@@ -1,0 +1,51 @@
+
+	문제) /etc/default/useradd 를 수정하지 않고
+
+		이름 	: itbank2
+		비밀번호 	: 1234
+		UID 	: 1004
+		GID	: 1004
+		보조그룹	: 10
+		Comment : KGITBANK
+		H.D	: /kgitbank/itbank2	
+		SHELL	: /bin/dash
+		SKEL	: /myskel		<- /etc/skel 복사본
+		
+	/myskel에는 숨김 속성이 아닌 linux 파일을 포함시키세요
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+----------------------------------------------------------------------------------------------------
+[root@itbank ~]# rm -rf /myskel
+[root@itbank ~]# cp -r /etc/skel /myskel
+[root@itbank ~]# touch /myskel/linux
+[root@itbank ~]# mkdir /kgitbank 
+
+[root@itbank ~]# useradd itbank2 -u 1004 -G 10 -c KGITBANK -d /kgitbank/itbank2 -s /bin/dash -mk /myskel
+[root@itbank ~]# echo 1234 | passwd --stdin itbank2
+

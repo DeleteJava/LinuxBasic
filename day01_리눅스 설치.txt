@@ -1,0 +1,55 @@
+VMWare 가상 머신 만들기
+
+------------------------------------
+윈도우 운영체제가 특정 권한으로 관리하는 폴더
+C:\
+C:\Users
+C:\Program Files
+C:\Program Files (x86)
+------------------------------------
+
+File - New Virtual Machine
+Custom
+I will install the operating system later
+Linux - CentOS 6 64bit
+가상 머신 이름과 경로 지정하기
+CPU : 1
+Memory : 1024
+Network : NAT
+Create a new virtual disk (40GB)
+
+Edit Virtual Machine Setting
+CD/DVD - Use ISO Image File - Browse
+준비한 이미지 파일 지정
+Connect at power on
+OK
+
+------------------------------------
+
+1) Intel/AMD Vtx 관련 문제
+- 재부팅 시에 바이오스 설정에 진입하여
+  CPU에서 가상화 옵션을 enable로 변경하고 저장
+
+2) 윈도우11에서는 vmware 16이상을 사용해야 한다
+- 16미만 버전에서는 가상머신 구동 시 블루스크린
+
+3) Device Guard 문제
+- Hyper-V 비활성화
+- 로컬 그룹 정책 - 가상화 기반 보안 켜기(사용 안함)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

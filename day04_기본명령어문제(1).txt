@@ -1,0 +1,16 @@
+
+	1. /test 디렉토리를 생성하세요 (있으면 rm -rf /test)
+
+	2. pwd를 입력했을 때 /test가 나올 수 있게 하세요
+
+	3. 전체 디스크에서 inittab, login.defs, grub.conf를 복사하여 /test에 가져오세요
+
+	4. /test에서 copied 라는 디렉토리를 하위에 생성하세요
+
+	5. inittab을 init로, login.defs를 login으로, grub.conf를 grub로 이름 변경 복사하세요
+	
+	6. 짧은 이름의 파일만 copied 디렉토리에 이동시키세요
+	
+	7. /test의 내용과 그 하위의 모든 목록을 result 파일에 기록하세요
+	
+	8. result 파일을 줄 번호 붙여서 출력하세요

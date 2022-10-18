@@ -1,0 +1,84 @@
+SetUID
+	:S 나 s 로 표현되고 8진수 모드로는 4000 표현됨 = chmod 4750 /test
+	:사용자가 SetUID 권한이 설정되어 있는 실행파일을 실행 할 경우
+	그 파일의 소유자 권한을 가지게 된다
+
+ex)	-rwsr-xr-x  1 	root 	root 	0 yyyy-mm-dd hh:mm:ss 	file01.sh
+	permission	UID	GID
+			< Ownership : 항상 소유권이 허가권보다 우선!!!!!
+
+        kgitbank  로 로그인시 root 의 권한으로 rws (7)=모든권한이라는 허가권으로 실행된다
+
+SetGID
+	:S 나 s 로 표현되고 8진수 모드로는 2000 표현됨 = chmod 2750 /test
+	:SetUID 와 동일한 내용을 가지며 다만 그룹의 권한으로 실행 된다는 것만 다르다
+
+ex)	-rwxr-sr-x  1 	root 	root 	0 yyyy-mm-dd hh:mm:ss 	file02.sh
+	permission	UID	GID
+
+ 	kgitbank  로 로그인시 root 의 그룹권한으로 r-s (5)=읽기권한이라는 허가권으로 실행된다
+
+Sticky bit = 게시판
+	:T 나 t 로 표현되면 8진수 모드로는 1000 으로 표현된다
+	:해당 권한이 설정되어 있는 디렉토리의 모든 유저는 파일 생성이나 삭제가 자유롭지만
+	삭제시에는 소유권자 와 슈퍼유저(root)만이 지울 수 있다 
+
+ex)	drwxr-xr-t  1 	root 	root 	0 yyyy-mm-dd hh:mm:ss 	file01
+	permission	UID	GID
+
+ 	kgitbank  로 로그인시 other으로 r-t (5)=읽기권한이라는 허가권으로 실행된다
+
+============================================================================================
+
+        su는 대상으로 계정 이름을 지정한다
+        대상을 생략하면 root를 지정한다
+        명령어와 대상 사이에 - 를 넣으면 대상 계정의 환경변수까지 불러올 수 있다
+        su를 실행하는 계정이 root라면 비밀번호를 요구하지 않는다.
+        그 외의 계정은 전환할 계정의 비밀번호를 입력해야 한다(/etc/pam.d/su)
+        
+        su root : 현재 계정에서 root계정으로 전환한다
+
+        su - root: 현재 계정에서 root계정으로 전환하면서, root계정의 환경변수를 불러오고,
+                  root의 home에서 시작
+
+        su itbank : 현재 계정에서 itbank계정으로 전환한다
+        su - root: 현재 계정에서 itbank계정으로 전환하면서, itbank계정의 환경변수를 불러오고,
+                  itbank의 home에서 시작
+        
+설치 yum install samba -y
+
+	/bin/su 보안 설정
+
+	1. 계정 생성
+
+		[root@itbank ~]# useradd admin
+		[root@itbank ~]# usermod admin -G wheel
+
+	2. /bin/su 권한 설정(SetUID)
+
+		[root@itbank ~]# chown .wheel /bin/su
+		[root@itbank ~]# chmod 4750 /bin/su
+
+============================================================================================
+
+	sudo 설정
+
+	1. 계정 생성 및 wheel 그룹에 포함시키기
+
+		[root@itbank ~]# useradd admin -G wheel
+
+	2. visudo (/etc/sudoers 편집)
+
+		[root@itbank ~]# visudo
+		(vi에서)
+		98ggx 101ggx 	(98번째 줄의 주석 해제, 101번째 줄의 주석 해제)
+		:wq 		(저장 및 종료)	
+
+	3. 내용 확인
+
+	[root@itbank ~]# cat -n /etc/sudoers | head -101 | tail -5
+	    97  ## Allows people in group wheel to run all commands
+	    98   %wheel ALL=(ALL)       ALL
+	    99
+	   100  ## Same thing without a password
+	   101   %wheel ALL=(ALL)       NOPASSWD: ALL

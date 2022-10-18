@@ -1,0 +1,29 @@
+1. /itbank/centum/1102/user1 을 홈디렉토리로 사용하는 user1을 생성
+[root@itbank ~]# mkdir -p /itbank/centum/1102
+[root@itbank ~]# useradd user1 -d /itbank/centum/1102/user1
+
+2. /itbank/centum/1102/user2 를 홈디렉토리, dash을 사용하는 user2 생성
+[root@itbank ~]# useradd user2 -d /itbank/centum/1102/user2 -s /bin/dash
+
+3. /home/user3 을 홈디렉토리로 user3 생성
+[root@itbank ~]# useradd user3
+
+4. uid 600, gid 10 의 user4 생성
+[root@itbank ~]# useradd user4 -u 600 -g 10
+
+5. /sbin/nologin 을 기본 쉘로 사용하는 user5 생성
+[root@itbank ~]# useradd user5 -s /sbin/nologin
+
+6. user3의 홈디렉토리를 /itbank/centum/1102/user3 으로 변경
+[root@itbank ~]# usermod user3 -md /itbank/centum/1102/user3
+
+7. cat -n /etc/passwd | grep user 출력
+[root@itbank ~]# cat -n /etc/passwd | grep user
+    17  usbmuxd:x:113:113:usbmuxd user:/:/sbin/nologin
+    23  rpcuser:x:29:29:RPC Service User:/var/lib/nfs:/sbin/nologin
+    28  saslauth:x:498:76:Saslauthd user:/var/empty/saslauth:/sbin/nologin
+    35  user1:x:501:501::/itbank/centum/1102/user1:/bin/bash
+    36  user2:x:502:502::/itbank/centum/1102/user2:/bin/dash
+    37  user3:x:503:503::/itbank/centum/1102/user3:/bin/bash
+    38  user4:x:600:10::/home/user4:/bin/bash
+    39  user5:x:601:601::/home/user5:/sbin/nologin

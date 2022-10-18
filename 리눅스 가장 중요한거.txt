@@ -1,0 +1,6 @@
+nameserver 설정
+
+
+echo 8.8.8.8 > etc/resolv.conf 
+nameserver 8.8.8.8           
+컨트롤c로 취소                            <<<< 이 작업안하면 파일 다운로드 절대 안됨

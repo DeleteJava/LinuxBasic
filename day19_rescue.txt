@@ -1,0 +1,14 @@
+
+
+	Rescue Mode
+
+
+     1.	컴퓨터 부팅 시 BIOS 메뉴에 진입 (F2 or F10 or Del)
+
+     2. boot메뉴에서 cdrom을 맨 위에 배치(+, -)
+
+     3. CentOS media로 부팅되면 Rescue mode 선택
+
+     4. 언어 및 키보드 선택 후 네트워크 설정 하지 않고 기존 저장장치(하드디스크)를 탑재하겠다는 메시지에서 OK
+
+     5. shell 로 부팅해서 chroot /mnt/sysimage 실행하고 문제가 되는 부분을 해결 후 exit

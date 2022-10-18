@@ -1,0 +1,13 @@
+1. /itbank/centum/1102/user1 을 홈디렉토리로 사용하는 user1을 생성
+
+2. /itbank/centum/1102/user2 를 홈디렉토리, dash을 사용하는 user2 생성
+
+3. /home/user3 을 홈디렉토리로 user3 생성
+
+4. uid 600, gid 10 의 user4 생성
+
+5. /sbin/nologin 을 기본 쉘로 사용하는 user5 생성
+
+6. user3의 홈디렉토리를 /itbank/centum/1102/user3 으로 변경
+
+7. cat -n /etc/passwd | grep user 출력

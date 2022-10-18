@@ -1,0 +1,52 @@
+		TAR
+
+1. 원본파일 보존   			tar cvf 1.tar 1
+                                      (1.tar는 파일이름)
+2. 중복압축가능    			tar cvf 11.tar 1.tar
+3. 디렉토리 압축가능   		tar cvf zip.tar /zip
+4. 다중파일 단일압축   		tar cvf all.tar *
+5. gzip/bzip2와 병합하여 사용 	gzip all.tar
+
+z tar+gzip
+j tar+bzip2
+J tar+xz
+c 압축 		(Compress)
+x 해제 		(eXpress)
+f 파일명지정 	(File)
+v 압축내용보기 	(View)
+t 압축풀기전 목록 확인
+
+압축	cvf 압축 된(output) 파일명		압축 할 (input) 파일명
+
+
+해제	xvf 압축 된 (output) 파일명		압축 해제 할 (input) 파일명
+
+*****참고*****
+
+zcvf  / zxvf  	=> tar + gzip    >> gzip 파일 압축해제
+jcvf  / jxvf  	=> tar + bzip2   >> vbzip2 파일 압축해제
+Jcvf  / Jxvf 	=> tar + xz      >> xz 파일 압축해제
+
+2014년 5월 부터 TAR 유틸 업데이트
+
+tar xvf 로 모든 TAR확장 압축파일 해제 가능
+
+
+				압축			/		해제
+
+	tar		tar cvf  [압축파일이름] [대상파일]	/	tar xvf [압축파일이름]
+        tar.gz		tar zcvf [압축파일이름] [대상파일]	/	tar zxvf [압축파일이름]   <<<<tar zcvf 를 가장 많이 쓴다 (용량도 압축)
+	tar.bz2		tar jcvf [압축파일이름] [대상파일]	/	tar jxvf [압축파일이름]
+	zip		zip 	 [압축파일이름] [대상파일]	/	unzip [압축파일이름]
+
+===================================
+
+비밀번호 1q2w3e4r!!
+
+
+
+
+
+
+
+

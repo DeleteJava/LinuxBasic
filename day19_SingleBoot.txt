@@ -1,0 +1,46 @@
+
+	스냅샷 원본 이후 설정
+
+	vi /etc/sysconfig/network-scripts/ifcfg-eth0
+
+	vi /etc/selinux/config
+
+	rm -rf /etc/udev/rules.d/70-persistent-net.rules
+
+	vi /etc/inittab
+	id:3:initdefaults
+
+	init 6
+
+
+	===============================================
+
+	0 : halt
+	1 : Single Boot
+	2 : Multiuser (Without NFS)
+	3 : Full Multiuser Mode
+	4 : Unused
+	5 : X11
+	6 : reboot
+
+	===============================================
+
+	부팅 시 5, 4, 3, 2, 1 카운트 셀 때 아무키나 누르기
+
+	CentOS 6 (2.6.32-642.el6.x86_64) 에서 e (edit)
+
+	kernel /vmlinux ... 에서 e (edit)
+
+	명령어의 마지막 부분에 single이라는 단어 추가
+	(rhgb quite single)
+
+	kernel /vmlinux ... 에서 b (boot)
+
+	- single boot 는 login 과정 없이 Shell 을 실행하므로
+	- 비밀번호 분실시 사용 가능하다
+
+	===============================================
+
+		
+
+

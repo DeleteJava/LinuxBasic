@@ -1,0 +1,122 @@
+day 18
+
+내 컴퓨터에서 다른 컴퓨터에 접속하기 위해 필요한 요소
+
+IP Address (IPv4) : 컴퓨터끼리 서로 식별하는 이름
+32비트의 주소체계
+
+0000 0000.0000 0000.0000 0000.0000 0000
+~
+1111 1111.1111 1111.1111 1111.1111 1111   <<공인 IP 범위
+
+이진수는 컴퓨터에게 편리하지만 사람이 식별하기 불편하다
+>> 10진수로 바꿔서 표현
+0.0.0.0 ~ 255.255.255.255
+
+IP Address : 컴퓨터를 식별하기 위한 주소(네트워크/호스트)
+SubnetMask : 대역과 호스트를 구분하기 위한 기준
+Gateway    : 다른 대역과 통신하기 위한 첫번째 관문
+DNS Server : 숫자 IP대신 글자 주소를 사용하기 위한 서버
+
+window : ipconfig 
+rinux  : ifconfig
+route -n  : 리눅스 게이트웨이 확인
+window cmd 명령어 : tracert = 대상 컴퓨터와 통신하기 위한 중간 경로를 추적한다
+rinux 터미널 명령어 : traceroute =          "
+ping     : 대상 컴퓨터와 통신여부 확인
+nslookup : 글자 주소 <=> IP 주소
+
+
+==== 관련 설정 파일 ====
+
+/etc/sysconfig/network-scripts/ifcfg-eth0(or ens33)
+
+/etc/resolv.conf <<< nameserver 설정  vi 나 cat > /etc/resolv.conf 로 삽입
+yum search tomcat 1>/dev/null  << 이런류의 명령 입력시 오류내역중에 couldn't 이 나오면 거의 무조건 nameserver 미설정이다.
+
+service network restart  < 네트워크 재시작
+
+위 명령어에서 not for this device 오류가 뜰 경우
+rm -rf /etc/udev/rules.d/70-persistence-net.rules
+init 6      <<< 리눅스가 재시작하면서 알아서 재설치된다
+
+
+특정 프로그램이 네트워크를 통해 접속하는 클라이언트를 관리하려면
+여러 프로그램을 구분하기 위해서 네트워크 포트를 이용한다
+
+IP주소가 건물 주소레 해당한다면 포트번호는 해당 건물의 방 번호에 해당한다
+
+각 방에는 서비스를 제공하기 위한 프로그램 (데몬 프로세스)가 기다리고 있으나
+이를 중간에서 차단하는 것이 방화벽의 역할이다
+
+TCP : Transmission Control Protocol    (ftp)
+- 신뢰성 기반의 통신 프로토콜
+- 연결이 중간에 귾어지더라도 다시 이어갈 수 있다
+- 속도도 중요하지만 내용이 잘 전달되는가에 중점을 둔다
+UDP : User Datagram Protocol           (tftp)
+- 신뢰성보다는 빠른 전송을 필요로 할때 사용
+- 중간에 연결이 끊어지면 자체적인 복구 수단은 적다
+- 동영상 스트리밍, 파일 전송 등에 활용 가능하다
+
+각각 0 ~ 65535 번까지의 포트번호를 가지며 그 중 잘 알려진 포트 (well-known prot)들은
+거의 대부분 고정값을 이용한다
+
+특정 서비스는 특정 포트를 사용한다
+
+하나의 포트에는 하나의 서비스만 진입할 수 있다
+(서로 다른 서비스가 같은 포트를 점유할 수 없다)
+
+==== 방화벽 관련 명령어 ====                                window
+system-config-firewall (CentOS 6)        
+firewall-cmd           (CentOS 7)
+iptables
+
+netstat
+-l      : listen (접속 대기중)인 포트 확인
+-n      : 포트 번호 길이 확인
+-t      : tcp 포트 확인
+-u      : udp 포트 확인
+-p      : process id (PID) 확인
+-e      : 모든 포트 확인
+
+LISTEN  : 접속 대기중
+ESTABLISHED : 접속중인 포트 (세션)
+
+netstat -lntup | grep ***
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

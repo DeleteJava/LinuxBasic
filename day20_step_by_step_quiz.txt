@@ -1,0 +1,91 @@
+
+
+
+
+
+
+
+		스냅샷 초기 이미지 이후 진행
+
+		
+
+
+
+
+
+
+
+#1.
+	- SELinux 보안 설정을 해제하세요
+	- 네트워크 설정에서 IP주소를 192.168.x.10 으로 변경하세요
+	- root 계정의 기본 쉘을 /bin/sh 로 변경해보세요
+
+
+
+#2.
+	- user01, user02, user03계정을 생성하세요
+	- bash,   csh,     dash 를 사용하게 만들어주세요
+	- 비밀번호를 1로 변경해주세요
+
+
+
+#3	
+	- user01은 ftp에 접속할 시 읽기, 쓰기, 접근 가능
+	- user02는 ftp에 접속할 시 읽기, 접근 가능
+	- user03은 ftp에 접속할 시 접근만 가능하게 변경해주세요
+
+
+#4.
+	- cdrom을 /cdrom에 마운트하세요
+	- rpm을 이용하여 vsftpd, httpd, xinetd, telnet-server, telnet을 설치하세요
+	- vsftpd를 restart 해주세요
+
+
+
+#5
+	- 20G HDD를 추가 후, 절반씩 나누어서 /export/http
+				       /export/ftp 에 마운트 하세요
+	- fstab에 UUID로 등록해 주세요
+
+
+
+#6	
+	- 사용자 java01을 생성하고 비밀번호를 1로 설정하세요
+	- cdrom을 이용하여 java-1.8을 설치하세요
+	- java -version, javac -version 확인
+
+
+
+
+#7 	
+	- DNS서버를 168.126.63.1로 설정하세요 (resolv.conf)
+	- Apache(httpd), php, mysql 패키지를 yum으로 설치 하세요
+	- wget을 이용하여 xe.zip을 /var/www에 다운로드 하세요
+	(http://xpressengine.com)
+
+
+
+#8	
+	- xe.zip을 압축해제 후 생성되는 xe디렉토리를 html로 이름 변경하세요
+	- 방화벽(system-config-firewall)을 비활성화 해주세요
+	- httpd, mysqld 를 서비스 재시작 하고 웹 브라우저로 확인하세요
+
+
+
+
+
+#9
+	- /admin에 /root의 내용과 같은 admin계정을 생성하세요
+	- su, sudo를 admin이 사용할 수 있도록 설정하세요
+	- sudo 사용시 password를 묻지 않게 설정해보세요
+
+
+
+
+#10
+	- /etc/yum.repos.d의 모든 repository파일을 숨김 속성으로 압축하세요
+	- itbank.repo를 생성하여 local-repo를 cdrom으로 지정하세요
+	- yum을 이용하여 mc패키지를 설치하세요
+
+
+

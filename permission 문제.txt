@@ -1,0 +1,100 @@
+			[권한]
+
+
+리눅스 서버는 여러 사용자가 접속하는 컴퓨터이므로
+사용자간의 파일 소유권 분쟁이 발생하게 된다
+이런 상황을 위해 명확하게 기준을 제시하고 소유주와 권한을 정리해주는 기능이
+권한 및 소유자의 개념이다
+
+ls -l을 입력하여 파일을 살펴보면
+
+[root@itbank chmodtest]# ls -l
+합계 12
+-rw-r--r--. 1 root root    0 2017-06-20 12:29 1
+-rw-r--r--. 1 root root    0 2017-06-20 12:29 2
+-rw-r--r--. 1 root root    0 2017-06-20 12:29 3
+drwxr-xr-x. 2 root root 4096 2017-06-20 12:29 a
+drwxr-xr-x. 2 root root 4096 2017-06-20 12:29 b
+drwxr-xr-x. 2 root root 4096 2017-06-20 12:29 c
+
+touch로 1 2 3 파일을 생성 && mkdir로 a b c를 생성하고 확인한 모습이다
+
+파일 1,2,3은 -rw-r--r--로 표시되어 있고
+디렉토리들은 drwxr-xr-x로 표시된다
+
+r : [r]ead   읽기 권한		Numeric : 4
+w : [w]rite  쓰기 권한		Numeric : 2
+x : e[x]cute 실행, 접근 권한	Numeric : 1
+
+이 권한들은 각각 숫자로 표현이 가능하며 이진수를 기반으로 생각하면 된다
+
+파일종류를 나타내는 첫번째 자리를 제외한 나머지는
+
+rwx	rwx	rwx
+소유주	그룹	다른사람들
+user	group	other
+
+로 구분할 수 있다
+
+Quiz 1. 각 내용을 읽고 파일의 권한을 Numeric으로 표기하세요
+
+-rwxr-xr-x. 1 root root    0 2022-03-23 12:50 1
+=> Numeric Permission :755
+
+-rw-r--r--. 1 root root    0 2022-03-23 12:50 2
+=> Numeric Permission :644 
+
+-rw------. 1 root root     0 2022-03-23 12:50 3
+=> Numeric Permission :600 
+ 
+drwx------. 2 root root 4096 2022-03-23 12:50 a
+=> Numeric Permission : 700
+ 
+dr--rwxrwx. 2 root root 4096 2022-03-23 12:50 b
+=> Numeric Permission : 477
+
+drwxr-x---. 2 root root 4096 2022-03-23 12:50 c
+=> Numeric Permission : 750
+
+
+
+		[명령어]
+
+chmod [Numeric Permission] [Target]
+chmod [ugo+-rwx] [Target] -> 잘 안쓰임
+chmod -R : 하위디렉토리 및 파일의 권한까지 바꿈 (가급적 사용하지 않는다)
+
+chown [User].[Group] [Target]
+
+chown root.g1 [Target] : 소유주 root 그룹 g1으로 변경
+chown root. [Target] : 소유주 및 그룹을 root로 변경
+chown .root [Target] : 그룹만 root로 변경
+chown -R root.g1 [Target] : 지정 디렉토리 및 하위 모든 내용에 대해 소유주 및 그룹을 변경
+
+
+		[특수 권한]
+
+SetUID	 : 다른 계정이 파일을 실행할 때 USER의 권한으로 실행하게끔 설정  => 4000
+SetGID	 : 다른 계정이 파일을 실행할 때 GROUP의 권한으로 실행하게끔 설정 => 2000
+
+[Quiz. ftp클라이언트 실행파일을 허용된 그룹의 구성원만 사용할 수 있게끔 설정해보기]
+
+/usr/bin/ftp : SetUID 750
+
+ftpuser : ftp o 
+user01  : ftp o
+user02  : ftp x
+
+login as: user01
+user01@192.168.1.100's password:
+Last login: Tue Jun 20 15:11:42 2017 from 192.168.1.1
+[user01@itbank ~]$ ftp
+ftp>
+
+login as: user02
+user02@192.168.1.100's password:
+[user02@itbank ~]$ ftp
+-bash: /usr/bin/ftp: 허가 거부
+
+
+

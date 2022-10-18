@@ -1,0 +1,52 @@
+
+	1. /test 디렉토리를 생성하세요 (있으면 rm -rf /test)
+	[root@itbank ~]# rm -rf /test
+	[root@itbank ~]# mkdir /test
+
+
+	2. pwd를 입력했을 때 /test가 나올 수 있게 하세요
+	[root@itbank ~]# cd /test
+	[root@itbank test]# pwd
+	/test
+
+
+	3. 전체 디스크에서 inittab, login.defs, grub.conf를 복사하여 /test에 가져오세요
+	[root@itbank test]# cp /etc/inittab /etc/login.defs /etc/grub.conf /test
+
+
+	4. /test에서 copied 라는 디렉토리를 하위에 생성하세요
+	[root@itbank test]# mkdir copied
+
+
+	5. inittab을 init로, login.defs를 login으로, grub.conf를 grub로 이름 변경 복사하세요
+	(cp [원본파일] [대상경로/원하는파일이름])
+	[root@itbank test]# cp inittab init
+	[root@itbank test]# cp login.defs login
+	[root@itbank test]# cp grub.conf grub
+
+
+	6. 짧은 이름의 파일만 copied 디렉토리에 이동시키세요
+	(와일드카드 *, ?)
+	[root@itbank test]# mv ???? ????? copied
+
+
+	7. /test의 내용과 그 하위의 모든 목록을 result 파일에 기록하세요
+	(ls + Recursive)
+	[root@itbank test]# ls -lR > result
+
+
+	8. result 파일을 줄 번호 붙여서 출력하세요
+	[root@itbank test]# cat -n result
+	     1  .:
+	     2  합계 16
+	     3  drwxr-xr-x. 2 root root 4096 2022-03-15 15:21 copied
+	     4  -rw-------. 1 root root  799 2022-03-15 15:18 grub.conf
+	     5  -rw-r--r--. 1 root root  884 2022-03-15 15:18 inittab
+	     6  -rw-r--r--. 1 root root 1816 2022-03-15 15:18 login.defs
+	     7  -rw-r--r--. 1 root root    0 2022-03-15 15:22 result
+	     8
+	     9  ./copied:
+	    10  합계 12
+	    11  -rw-------. 1 root root  799 2022-03-15 15:19 grub
+	    12  -rw-r--r--. 1 root root  884 2022-03-15 15:19 init
+	    13  -rw-r--r--. 1 root root 1816 2022-03-15 15:19 login

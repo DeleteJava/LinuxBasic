@@ -1,0 +1,85 @@
+1) 네트워크 설정하기
+
+/etc/sysconfing/network-scripts/ifcfg-eth0 파일 편집
+(네트워크 대역을 확인하고, 192.168.1 대역이 아니라면 본인의 환경에 맞게 편집합니다, IPADDR과 GATEWAY는 대역이 같음)
+
+DEVICE=eth0
+BOOTPROTO=static
+IPADDR=192.168.1.100
+NETMASK=255.255.255.0
+GATEWAY=192.168.1.2
+ONBOOT=yes
+
+rm -rf /etc/udev/rules/70-persistant-net.rules
+
+2) 보안 강화 리눅스(SELinux) 해제
+/etc/selinux/config
+
+#SELINUX=enforcing
+SELINUX=disabled
+
+init 6
+
+3) DNS 서버 설정
+
+echo nameserver 8.8.8.8 > /etc/resolv.conf
+ping google.com -c 2
+
+4) yum 으로 패키지 설치
+vi /etc/yum.repos.d/CentOS-Base.repo
+:%s/^mirrorlist/#mirrorlist
+:%s/^#baseurl/baseurl
+:%s/mirror.centos/vault.centos
+:wq
+yum clean all
+yum install httpd* php* mysql-* -y
+
+5) 서비스 시작
+service httpd restart
+service mysqld restart
+
+netstat -lntup | grep httpd
+netstat -lntup | grep mysqld
+
+6) 방화벽 설정
+system-config-firewall
+80:tcp
+3306:tcp
+
+7) mysql 설정
+# mysqladmin -u root password '1'
+# mysql -u root -p
+mysql> create database xe;
+mysql> grant all privileges on root.* to root@localhost identified by '1' with grant option;
+mysql> flush privileges;
+mysql> exit
+
+
+8) xe 다운로드 및 압축 해제  https://xe1.xpressengine.com/download 활용
+wget [xe링크 주소]
+mv 2275???? xe.zip
+unzip xe.zip
+rm -rf /var/www/html
+
+mv xe /var/www/html
+
+9) 이후 웹브라우저에서 접속하여 설명에 따라 서비스 초기 설정 진행
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

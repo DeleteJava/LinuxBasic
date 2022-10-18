@@ -1,0 +1,24 @@
+	가상머신을 다운로드 받으세요 (스냅샷 있으면 스냅샷 복구)
+
+	http://221.164.9.222
+	ID : itbank
+	PW : it
+
+	VM_Compress/Linux1_vmos.zip
+
+	다운로드 받고 압축 해제 후
+	확장자가 .vmx인 파일을 더블클릭하면 실행됩니다
+
+	최초 root 계정의 비밀번호는 1
+
+1) 네트워크 설정을 직접 하고 putty로 접속하기
+2) DNS 설정하기
+3) yum을 이용하여 httpd 서비스 다운 및 설치
+4) 방화벽에서 httpd 서비스 포트 열어주기
+5) /etc/selinux/config 에서 enforcing을 disabled로 바꾸기
+6) 윈도우 웹 브라우저로 접속하여 테스트하기
+7) /var/www/html/index.html
+
+   <h1>여기에 본인의 이름을 작성하세요</h1>
+
+	

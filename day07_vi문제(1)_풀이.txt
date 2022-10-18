@@ -1,0 +1,47 @@
+1. /vitest 디렉토리를 만들고 내부에 login.defs grub.conf inittab 파일을 검색해서 복사하세요.
+[root@itbank ~]# mkdir -p /vitest && find /etc -name login.defs -o -name grub.conf -o -name inittab | xargs cp -t /vitest
+
+2. /vitest/login.defs 를 vi로 열어둔 상태에서 다음 내용을 진행해주세요 ( :! 명령)
+[root@itbank vitest]# vi /vitest/login.defs
+
+3. /viexe 디렉토리를 만드세요
+:! mkdir /viexe && echo OK
+
+4. /viexe 디렉토리 안에 1 2 3 4 파일 4개와 t1 t2 t3 t4 디렉토리 4개를 생성
+:! mkdir /viexe/t1 /viexe/t2 /viexe/t3 /viexe/t4 && touch /viexe/1 /viexe/2 /viexe/3 /viexe/4
+
+5. [/viexe 디렉토리 안에 파일목록]만 문서 가장위에 삽입
+:0r! ls -l /viexe | grep ^-
+
+6. 문서 마지막에 [/viexe 디렉토리 내부 전체 목록]을 출력한 뒤 [t1 t2 t3 t4 디렉토리 목록만 남도록 편집]
+:$r! ls -l /viexe
+5dd
+
+7. 6번의 내용을 12번째 줄에 삽입한 뒤 /vitest/kgitbank 로 저장
+4yy 12gg k p
+:w /vitest/kgitbank
+
+
+8. 문서의 모든 DAYS 를 kgitbank 로 치환한 뒤에 /vitest/kgitbank1 로 저장
+:%s/DAYS/kgitbank/g
+:w /vitest/kgitbank1
+
+9. 새문서를 열어서 ip 내용을 삽입한뒤에 /vitest/kgitbank2로 저장
+:enew!
+:.! ifconfig
+:w /vitest/kgitbank2
+
+
+10. /vitest의 login.defs inittab grub.conf의 내용과
+    kgitbank,kgitbank1,kgitbank2 의 위에서 2번째 줄까지 내용을
+    /home/vitest/linux/kgitbank3 파일로 저장하세요
+
+:! mkdir -p /home/vitest/linux/ && head -2 /vitest/* > /home/vitest/linux/kgitbank3
+
+or
+
+:! mkdir -p /home/vitest/linux
+:enew!
+:.! head -2 /vitest/*
+:w /home/vitest/linux/kgitbank3
+

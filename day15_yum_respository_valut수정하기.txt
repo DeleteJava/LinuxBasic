@@ -1,0 +1,8 @@
+vi /etc/yum.repos.d/CentOS-Base.repo
+
+:%s/^mirrorlist/#mirrorlist
+:%s/^#baseurl/baseurl
+:%s/mirror.centos/vault.centos
+:wq
+
+yum clean all

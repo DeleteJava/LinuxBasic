@@ -1,0 +1,31 @@
+ping 127.0.0.1 &      < 백그라운드 핑보내기
+
+종료 방법 : kill % (job목록 숫자)
+
+완전 종료 방법 : kill -9 
+
+yum remove httpd -y    yum 삭제
+
+yum install httpd -y   yum 실행
+
+  
+
+
+
+
+
+
+================================오늘 한거 인터넷 연결 확인 부터
+
+
+[root@itbank ~]# echo nameserver 8.8.8.8 > /etc/resolv.conf
+[root@itbank ~]# ping google.com -c 4
+PING google.com (142.250.207.14) 56(84) bytes of data.
+64 bytes from nrt13s54-in-f14.1e100.net (142.250.207.14): icmp_seq=1 ttl=128 time=30.7 ms
+64 bytes from nrt13s54-in-f14.1e100.net (142.250.207.14): icmp_seq=2 ttl=128 time=31.2 ms
+64 bytes from nrt13s54-in-f14.1e100.net (142.250.207.14): icmp_seq=3 ttl=128 time=30.7 ms
+64 bytes from nrt13s54-in-f14.1e100.net (142.250.207.14): icmp_seq=4 ttl=128 time=30.9 ms
+
+--- google.com ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 3078ms
+rtt min/avg/max/mdev = 30.721/30.946/31.277/0.277 ms

@@ -1,0 +1,382 @@
+
+
+
+
+
+		기존 압축 폴더를 삭제하고 새로 압축 풀어주세요
+
+		
+
+
+
+
+
+
+
+#1.
+	- SELinux 보안 설정을 해제하세요
+	- 네트워크 설정에서 IP주소를 192.168.1.10으로 변경하세요
+	- root 계정의 기본 쉘을 ksh로 변경해보세요
+
+
+login as: root
+root@192.168.1.100's password:
+Last login: Mon Nov 13 20:08:47 2017
+[root@itbank ~]# vi /etc/selinux/config
+[root@itbank ~]# cat -n /etc/selinux/config | head -8 | tail -2
+     7  #SELINUX=enforcing
+     8  SELINUX=disabled		// 재부팅 해야 적용
+[root@itbank ~]#
+[root@itbank ~]# vi /etc/sysconfig/network-scripts/ifcfg-eth0
+[root@itbank ~]# cat -n /etc/sysconfig/network-scripts/ifcfg-eth0
+     1  DEVICE=eth0
+     2  #BOOTPROTO=dhcp
+     3  BOOTPROTO=static
+     4  IPADDR=192.168.1.10
+     5  NETMASK=255.255.255.0
+     6  GATEWAY=192.168.1.2
+     7  ONBOOT=yes
+[root@itbank ~]# usermod -s /bin/ksh root
+[root@itbank ~]# cat -n /etc/passwd | head -1
+     1  root:x:0:0:root:/root:/bin/ksh
+[root@itbank ~]#
+[root@itbank ~]# service network restart	// 변경된 IP로 putty 새로 접속
+
+#2.
+	- user01, user02, user03계정을 생성하세요
+	- bash,   csh,    sh 를 사용하게 만들어주세요
+	- 비밀번호를 1로 변경해주세요
+
+[root@itbank ~]# useradd user01
+[root@itbank ~]# passwd user01
+user01 사용자의 비밀 번호 변경 중
+새  암호:
+잘못된 암호: 너무 짧습니다
+잘못된 암호: 앞뒤 어느쪽에서 읽어도 같은 문맥임
+새  암호 재입력:
+passwd: 모든 인증 토큰이 성공적으로 업데이트 되었습니다.
+[root@itbank ~]#
+[root@itbank ~]# useradd user02 -s /bin/csh
+[root@itbank ~]# echo '1' | passwd --stdin user02
+user02 사용자의 비밀 번호 변경 중
+passwd: 모든 인증 토큰이 성공적으로 업데이트 되었습니다.
+[root@itbank ~]#
+[root@itbank ~]# useradd user03 -s /bin/sh
+[root@itbank ~]# echo '1' | passwd --stdin user03
+user03 사용자의 비밀 번호 변경 중
+passwd: 모든 인증 토큰이 성공적으로 업데이트 되었습니다.
+[root@itbank ~]#
+
+#3	
+	- user01은 ftp에 접속할 시 읽기, 쓰기, 접근 가능
+	- user02는 ftp에 접속할 시 읽기, 접근 가능
+	- user03은 ftp에 접속할 시 접근만 가능하게 변경해주세요
+
+[root@itbank ~]# ls -ld ~user01 ~user02 ~user03
+drwx------. 4 user01 user01 1024 2018-02-06 13:06 /home/user01
+drwx------. 4 user02 user02 1024 2018-02-06 13:07 /home/user02
+drwx------. 4 user03 user03 1024 2018-02-06 13:07 /home/user03
+[root@itbank ~]#
+[root@itbank ~]# chmod 700 ~user01
+[root@itbank ~]# chmod 500 ~user02
+[root@itbank ~]# chmod 100 ~user03
+[root@itbank ~]#
+[root@itbank ~]# ls -ld ~user01 ~user02 ~user03
+drwx------. 4 user01 user01 1024 2018-02-06 13:06 /home/user01
+dr-x------. 4 user02 user02 1024 2018-02-06 13:07 /home/user02
+d--x------. 4 user03 user03 1024 2018-02-06 13:07 /home/user03
+[root@itbank ~]#
+
+#4.
+	- cdrom을 /cdrom에 마운트하세요
+	- rpm을 이용하여 vsftpd, httpd, xinetd, telnet-server, telnet을 설치하세요
+	- vsftpd를 restart 해주세요
+
+[root@itbank ~]# mount /dev/sr0 /cdrom
+mount: block device /dev/sr0 is write-protected, mounting read-only
+[root@itbank ~]# cd /cdrom/Packages/
+[root@itbank Packages]# rpm -ivh vsftpd-2.2.2-21.el6.x86_64.rpm xinetd-2.3.14-40.el6.x86_64.rpm telnet-server-0.17-48.el6.x86_64.rpm telnet-0.17-48.el6.x86_64.rpm httpd-2.2.15-53.el6.centos.x86_64.rpm --force
+경고: vsftpd-2.2.2-21.el6.x86_64.rpm: Header V3 RSA/SHA1 Signature, key ID c105b9de: NOKEY
+준비 중...               ########################################### [100%]
+   1:xinetd                 ########################################### [ 20%]
+   2:telnet-server          ########################################### [ 40%]
+   3:httpd                  ########################################### [ 60%]
+   4:telnet                 ########################################### [ 80%]
+   5:vsftpd                 ########################################### [100%]
+[root@itbank Packages]#
+[root@itbank Packages]# service vsftpd restart
+vsftpd 종료 중:                                            [  OK  ]
+vsftpd에 대한 vsftpd을 시작 중:                            [  OK  ]
+[root@itbank Packages]#
+[root@itbank Packages]# df -Th | grep cdrom
+/dev/sr0       iso9660  3.7G  3.7G     0 100% /cdrom
+[root@itbank Packages]# rpm -qa | grep "vsftpd\|httpd\|telnet\|xinetd" | cat -n
+     1  telnet-0.17-48.el6.x86_64
+     2  telnet-server-0.17-48.el6.x86_64
+     3  xinetd-2.3.14-40.el6.x86_64
+     4  vsftpd-2.2.2-21.el6.x86_64
+     5  httpd-tools-2.2.15-53.el6.centos.x86_64
+     6  httpd-2.2.15-53.el6.centos.x86_64
+[root@itbank Packages]# netstat -lntup | grep vsftpd
+tcp        0      0 0.0.0.0:21                  0.0.0.0:*                   LISTEN      3550/vsftpd
+[root@itbank Packages]#
+
+#5
+	- 20G HDD를 추가 후, 절반씩 나누어서 /export/http
+				       /export/ftp 에 마운트 하세요
+	- fstab에 UUID로 등록해 주세요
+
+[root@itbank Packages]# find /sys -name scan
+/sys/devices/pci0000:00/0000:00:07.1/host0/scsi_host/host0/scan
+/sys/devices/pci0000:00/0000:00:07.1/host1/scsi_host/host1/scan
+/sys/devices/pci0000:00/0000:00:10.0/host2/scsi_host/host2/scan
+/sys/module/scsi_mod/parameters/scan
+[root@itbank Packages]# echo "- - -" > /sys/devices/pci0000:00/0000:00:10.0/host2/scsi_host/host2/scan
+[root@itbank Packages]# fdisk -l /dev/sdb
+
+Disk /dev/sdb: 21.5 GB, 21474836480 bytes
+255 heads, 63 sectors/track, 2610 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x00000000
+
+[root@itbank Packages]# fdisk /dev/sdb
+Device contains neither a valid DOS partition table, nor Sun, SGI or OSF disklabel
+Building a new DOS disklabel with disk identifier 0x673cae3f.
+Changes will remain in memory only, until you decide to write them.
+After that, of course, the previous content won't be recoverable.
+
+Warning: invalid flag 0x0000 of partition table 4 will be corrected by w(rite)
+
+WARNING: DOS-compatible mode is deprecated. It's strongly recommended to
+         switch off the mode (command 'c') and change display units to
+         sectors (command 'u').
+
+Command (m for help): n
+Command action
+   e   extended
+   p   primary partition (1-4)
+p
+Partition number (1-4): 1
+First cylinder (1-2610, default 1):
+Using default value 1
+Last cylinder, +cylinders or +size{K,M,G} (1-2610, default 2610): +10G
+
+Command (m for help): n
+Command action
+   e   extended
+   p   primary partition (1-4)
+p
+Partition number (1-4): 2
+First cylinder (1307-2610, default 1307):
+Using default value 1307
+Last cylinder, +cylinders or +size{K,M,G} (1307-2610, default 2610):
+Using default value 2610
+
+Command (m for help): p
+
+Disk /dev/sdb: 21.5 GB, 21474836480 bytes
+255 heads, 63 sectors/track, 2610 cylinders
+Units = cylinders of 16065 * 512 = 8225280 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x673cae3f
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdb1               1        1306    10490413+  83  Linux
+/dev/sdb2            1307        2610    10474380   83  Linux
+
+Command (m for help): w
+The partition table has been altered!
+
+Calling ioctl() to re-read partition table.
+Syncing disks.
+[root@itbank Packages]# mkfs.ext4 /dev/sdb1 | grep done
+mke2fs 1.41.12 (17-May-2010)
+Writing inode tables: done
+Creating journal (32768 blocks): done
+Writing superblocks and filesystem accounting information: done
+[root@itbank Packages]# mkfs.ext4 /dev/sdb2 | grep done
+mke2fs 1.41.12 (17-May-2010)
+Writing inode tables: done
+Creating journal (32768 blocks): done
+Writing superblocks and filesystem accounting information: done
+[root@itbank Packages]# mkdir -p /export/http
+[root@itbank Packages]# mkdir -p /export/ftp
+[root@itbank Packages]#
+[root@itbank Packages]# mount /dev/sdb1 /export/http/
+[root@itbank Packages]# mount /dev/sdb2 /export/ftp/
+[root@itbank Packages]#
+[root@itbank Packages]# vi /etc/fstab
+[root@itbank Packages]#
+[root@itbank Packages]# df -Th | grep export
+/dev/sdb1      ext4     9.8G   23M  9.3G   1% /export/http
+/dev/sdb2      ext4     9.8G   23M  9.2G   1% /export/ftp
+[root@itbank Packages]# tail -2 /etc/fstab
+UUID=f9cd97ef-39d0-4d77-a364-89be5f9fb6bc /export/http  ext4    defaults        1 2
+UUID=b5e0a4ed-3add-4008-b07a-ec7a539232dd /export/ftp   ext4    defaults        1 2
+[root@itbank Packages]# umount -a
+umount: /cdrom: device is busy.
+        (In some cases useful info about processes that use
+         the device is found by lsof(8) or fuser(1))
+
+[root@itbank Packages]# mount -a
+[root@itbank Packages]# df -Th | grep export
+/dev/sdb1      ext4     9.8G   23M  9.3G   1% /export/http
+/dev/sdb2      ext4     9.8G   23M  9.2G   1% /export/ftp
+[root@itbank Packages]#
+
+#6	
+	- 사용자 java01을 생성하고 비밀번호를 1로 설정하세요
+	- cdrom을 이용하여 java 1.8을 설치하세요
+	- java -version, javac -version 확인
+
+[root@itbank ~]# useradd java01
+[root@itbank ~]# echo '1' | passwd --stdin java01
+java01 사용자의 비밀 번호 변경 중
+passwd: 모든 인증 토큰이 성공적으로 업데이트 되었습니다.
+[root@itbank ~]# df -Th  | grep cdrom
+/dev/sr0       iso9660  3.7G  3.7G     0 100% /cdrom
+
+[root@itbank ~]# rpm -ivh /cdrom/Packages/java-1.8*
+경고: /cdrom/Packages/java-1.8.0-openjdk-1.8.0.91-1.b14.el6.x86_64.rpm: Header V3 RSA/SHA1 Signature, key ID c105b9de: NOKEY
+준비 중...               ########################################### [100%]
+   1:java-1.8.0-openjdk-head########################################### [ 33%]
+   2:java-1.8.0-openjdk-deve########################################### [ 67%]
+   3:java-1.8.0-openjdk     ########################################### [100%]
+[root@itbank ~]#
+[root@itbank ~]# java -version
+openjdk version "1.8.0_91"
+OpenJDK Runtime Environment (build 1.8.0_91-b14)
+OpenJDK 64-Bit Server VM (build 25.91-b14, mixed mode)
+[root@itbank ~]#
+[root@itbank ~]# javac -version
+javac 1.8.0_91
+
+
+#7 	
+	- DNS서버를 168.126.63.1로 설정하세요 (resolv.conf)
+	- Apache(httpd), php, mysql 패키지를 yum으로 설치 하세요
+	- wget을 이용하여 xe.zip을 /var/www에 다운로드 하세요
+
+[root@itbank ~]# yum install httpd* php* mysql* -y -q &
+[1] 6203
+[root@itbank ~]# jobs
+[1]+  Running                 yum install httpd* php* mysql* -y -q &
+[root@itbank ~]#
+[root@itbank ~]#cd /var/www
+[root@itbank www]# wget http://download.xpressengine.com/download/18325662/22755988
+--2018-02-06 14:53:01--  http://download.xpressengine.com/download/18325662/22755988
+Resolving download.xpressengine.com... 1.255.50.158, 1.255.50.165
+Connecting to download.xpressengine.com|1.255.50.158|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 11465554 (11M) [application/zip]
+Saving to: `22755988'
+
+100%[========================================>] 11,465,554  10.7M/s   in 1.0s
+
+2018-02-06 14:53:03 (10.7 MB/s) - `22755988' saved [11465554/11465554]
+
+[root@itbank www]# ls -l
+합계 11220
+-rw-r--r--.  1 root root 11465554 2018-01-09 16:06 22755988
+drwxr-xr-x.  2 root root     4096 2017-10-20 01:44 cgi-bin
+drwxr-xr-x.  3 root root     4096 2018-02-06 14:51 error
+drwxr-xr-x.  2 root root     4096 2017-10-20 01:44 html
+drwxr-xr-x.  3 root root     4096 2018-02-06 14:51 icons
+drwxr-xr-x. 14 root root     4096 2018-02-06 14:52 manual
+[root@itbank www]# mv 22755988 xe.zip
+
+#8	
+	- xe.zip을 압축해제 후 생성되는 xe디렉토리를 html로 이름 변경하세요
+	- 방화벽에서 설치된 데몬들의 Port를 개방해주세요
+	- 재부팅 시 설치된 데몬들이 자동 시작할 수 있도록 구성해주세요
+
+[root@itbank www]# ls
+cgi-bin  error  html  icons  manual  xe.zip
+[root@itbank www]# unzip xe.zip 1>/dev/null
+[root@itbank www]# ls
+cgi-bin  error  html  icons  manual  xe  xe.zip
+[root@itbank www]# rm -rf html
+[root@itbank www]# mv xe html
+[root@itbank www]# ls
+cgi-bin  error  html  icons  manual  xe.zip
+[root@itbank www]# system-config-firewall
+[root@itbank www]# chkconfig | grep "httpd\|mysqld"
+httpd           0:해제  1:해제  2:해제  3:해제  4:해제  5:해제  6:해제
+mysqld          0:해제  1:해제  2:해제  3:해제  4:해제  5:해제  6:해제
+[root@itbank www]# chkconfig --level 35 httpd on
+[root@itbank www]# chkconfig --level 35 mysqld on
+[root@itbank www]# chkconfig | grep "httpd\|mysqld"
+httpd           0:해제  1:해제  2:해제  3:활성  4:해제  5:활성  6:해제
+mysqld          0:해제  1:해제  2:해제  3:활성  4:해제  5:활성  6:해제
+[root@itbank www]#
+
+
+#9
+	- /admin에 /root의 내용과 같은 admin계정을 생성하세요
+	- su, sudo를 admin이 사용할 수 있도록 설정하세요
+	- sudo 사용시 password를 묻지 않게 설정해보세요
+
+[root@itbank www]# useradd admin -d /admin -mk /root
+[root@itbank www]#
+[root@itbank www]# usermod -G wheel admin
+[root@itbank www]# chown .wheel /bin/su
+[root@itbank www]# chmod 4750 /bin/su
+[root@itbank www]# ls -l /bin/su
+-rwsr-x---. 1 root wheel 34904 2016-05-11 17:59 /bin/su
+[root@itbank www]#
+[root@itbank www]# visudo
+[root@itbank www]# cat -n /etc/sudoers | head -101 | tail -5
+    97  ## Allows people in group wheel to run all commands
+    98   %wheel ALL=(ALL)       ALL
+    99
+   100  ## Same thing without a password
+   101   %wheel ALL=(ALL)       NOPASSWD: ALL
+[root@itbank www]# echo '1' | passwd --stdin admin
+admin 사용자의 비밀 번호 변경 중
+passwd: 모든 인증 토큰이 성공적으로 업데이트 되었습니다.
+
+
+#10
+	- /etc/yum.repos.d의 모든 repository파일을 숨김 속성으로 압축하세요
+	- itbank.repo를 생성하여 local-repo를 cdrom으로 지정하세요
+	- yum을 이용하여 mc패키지를 설치하세요
+
+[root@itbank www]# cd /etc/yum.repos.d/
+[root@itbank yum.repos.d]# ls
+CentOS-Base.repo       CentOS-Media.repo  CentOS-fasttrack.repo
+CentOS-Debuginfo.repo  CentOS-Vault.repo
+[root@itbank yum.repos.d]# tar zcvf .repo.tar.gz *
+CentOS-Base.repo
+CentOS-Debuginfo.repo
+CentOS-Media.repo
+CentOS-Vault.repo
+CentOS-fasttrack.repo
+[root@itbank yum.repos.d]# ls -l .repo.tar.gz
+-rw-r--r--. 1 root root 1686 2018-02-06 15:17 .repo.tar.gz
+[root@itbank yum.repos.d]# rm -rf *
+[root@itbank yum.repos.d]# ls -l
+합계 0
+[root@itbank yum.repos.d]# cat > itbank.repo
+[repo-name]
+baseurl=file:///cdrom
+gpgcheck=0
+^C
+[root@itbank yum.repos.d]# yum clean all
+Loaded plugins: fastestmirror, refresh-packagekit, security
+Repository 'repo-name' is missing name in configuration, using id
+Cleaning repos: repo-name
+Cleaning up Everything
+Cleaning up list of fastest mirrors
+[root@itbank yum.repos.d]# df -Th | grep cdrom
+/dev/sr0       iso9660  3.7G  3.7G     0 100% /cdrom
+[root@itbank yum.repos.d]# yum install mc -y -q
+Repository 'repo-name' is missing name in configuration, using id
+[root@itbank yum.repos.d]# rpm -qa | grep ^mc
+mcpp-2.7.2-4.1.el6.x86_64
+mc-4.7.0.2-6.el6.x86_64
+[root@itbank yum.repos.d]# mc
+
+
